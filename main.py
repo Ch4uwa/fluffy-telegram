@@ -5,11 +5,10 @@ try:
     """Use a .env file to store API KEY"""
     from dotenv import load_dotenv
     load_dotenv()
+    API_KEY = os.getenv('API_KEY')
 except Exception as e:
     print(e)
-else:
-    API_KEY = os.getenv('API_KEY')
-
+    quit()
 
 
 def request_data(symbol: str):
