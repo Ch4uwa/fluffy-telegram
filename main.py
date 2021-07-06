@@ -76,7 +76,7 @@ def guess_closing_price(data):
 
 def main():
 
-    symbol = 'FB'  # input('Submit stock symbol (like: MSFT, IBM): ')
+    symbol = input('Submit stock symbol (like: MSFT, IBM): ')
 
     data = request_data(symbol=symbol)
     if data is not None:
