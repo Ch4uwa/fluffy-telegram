@@ -1,6 +1,15 @@
 import os
 import requests
 from datetime import date, timedelta
+try:
+    """Use a .env file to store API KEY"""
+    from dotenv import load_dotenv
+    load_dotenv()
+except Exception as e:
+    print(e)
+else:
+    API_KEY = os.getenv('API_KEY')
+
 
 
 def request_data(symbol: str):
@@ -19,9 +28,9 @@ def request_data(symbol: str):
     url = f'{url_base}function={url_function}&symbol={symbol}&apikey={API_KEY}'
 
     r = requests.get(url)
+    print(r.status_code)
     if r.ok:
         return r.json()
-    print(r.status_code)
     return None
 
 
@@ -39,12 +48,13 @@ def guess_closing_price(data):
 
     # Date and Time
     dt_now = date.today()
-    dt_yesterday = dt_now - timedelta(days=3)
+    dt_yesterday = dt_now - timedelta(days=5)
 
     try:
         yesterdays_closing = int(
             float(data['Time Series (Daily)'][str(dt_yesterday)]['4. close']))
-    except KeyError:
+    except Exception as e:
+        print(e)
         print('No closing data available.')
     else:
         print(f'Yesterday: {dt_yesterday}\n')
@@ -65,17 +75,14 @@ def guess_closing_price(data):
         print(yesterdays_closing)
 
 
-if __name__ == '__main__':
-    try:
-        from dotenv import load_dotenv
-    except ImportError as e:
-        print(e.msg)
-    else:
-        load_dotenv()
-        API_KEY = os.getenv('A_V_API_KEY')
+def main():
 
-    symbol = 'MSFT'  # input('Submit stock symbol (like: MSFT, IBM): ')
+    symbol = 'FB'  # input('Submit stock symbol (like: MSFT, IBM): ')
 
     data = request_data(symbol=symbol)
     if data is not None:
         guess_closing_price(data=data)
+
+
+if __name__ == '__main__':
+    main()
